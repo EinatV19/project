@@ -1,19 +1,66 @@
+import json
 import tkinter as tk
 from tkinter import messagebox
+
+from db.db_utils import check_user
+from main_client import Client
 
 # רשימת כיתות לדוגמה
 courses = ["מתמטיקה", "מדעי המחשב", "ספרות", "אזרחות", "פיזיקה", "ביולוגיה", "אנגלית", "היסטוריה"]
 
+client = Client()
+
+# Connect to the server
+client.connect()
+
+# פונקציה לפתיחת חלון רישום
+def open_register_window():
+    register_window = tk.Tk()
+    register_window.title("הרשמה למערכת")
+
+    # שדות הרשמה
+    label_mail = tk.Label(register_window, text="דוא\"ל:", font=("Arial", 14))  # החלפתי את הגרשיים
+    label_mail.pack(pady=10)
+    entry_register_mail = tk.Entry(register_window, font=("Arial", 14))
+    entry_register_mail.pack(pady=10)
+
+    label_register_password = tk.Label(register_window, text="סיסמה:", font=("Arial", 14))
+    label_register_password.pack(pady=10)
+    entry_register_password = tk.Entry(register_window, font=("Arial", 14), show="*")
+    entry_register_password.pack(pady=10)
+
+    def register_user():
+        mail = entry_register_mail.get()
+        password = entry_register_password.get()
+
+        message = f"register:{mail},{password}"
+        result = client.send_message(message)
+        result = json.loads(result)
+
+        if result['status'] == 'success':
+            messagebox.showinfo("הרשמה", "ההרשמה בוצעה בהצלחה!")
+            register_window.destroy()
+        else:
+            messagebox.showerror("שגיאה", "לא ניתן להרשם. בדוק את הנתונים ונסה שוב.")
+
+    btn_register = tk.Button(register_window, text="הרשמה", font=("Arial", 16), width=20, height=2, command=register_user)
+    btn_register.pack(pady=20)
+
+    register_window.mainloop()
 
 # פונקציה להדפסת הודעת הצלחה לאחר התחברות
 def login():
-    username = entry_username.get()
+    mail = entry_mail.get()
     password = entry_password.get()
 
-    if username == "teacher" and password == "1234":  # בדיקת שם משתמש וסיסמה לדוגמה
+    message = f"login:{mail},{password}"
+    result = client.send_message(message)
+    result = json.loads(result)
+
+    if result['status'] == 'success':  # בדיקת שם משתמש וסיסמה לדוגמה
         open_courses_window()
     else:
-        messagebox.showerror("Error", "שם משתמש או סיסמה שגויים!")
+        messagebox.showerror("Error", message)
 
 # פתיחת חלון כיתות לאחר התחברות
 def open_courses_window():
@@ -33,53 +80,6 @@ def open_courses_window():
 
     courses_window.mainloop()
 
-
-# חלון עבור כיתה נבחרת
-def open_class_window(course):
-    class_window = tk.Tk()
-    class_window.title(f"כיתה - {course}")
-
-    # כותרת של הכיתה
-    label_class = tk.Label(class_window, text=f"ברוך הבא לכיתה {course}!", font=("Arial", 20))
-    label_class.pack(pady=20)
-
-    # כפתורים לפונקציות בכיתה
-    btn_class_chat = tk.Button(class_window, text="צ'אט כיתתי", font=("Arial", 16), width=20, height=2,
-                               command=open_class_chat)
-    btn_class_chat.pack(pady=10)
-
-    btn_private_chat = tk.Button(class_window, text="צ'אט פרטי", font=("Arial", 16), width=20, height=2,
-                                 command=open_private_chat)
-    btn_private_chat.pack(pady=10)
-
-    btn_video_conference = tk.Button(class_window, text="שיחת ועידה", font=("Arial", 16), width=20, height=2,
-                                     command=open_video_conference)
-    btn_video_conference.pack(pady=10)
-
-    btn_assignments = tk.Button(class_window, text="משימות", font=("Arial", 16), width=20, height=2,
-                                command=open_assignments)
-    btn_assignments.pack(pady=10)
-
-    class_window.mainloop()
-
-
-# פונקציות למודולים בכיתה
-def open_class_chat():
-    messagebox.showinfo("צ'אט כיתתי", "כאן תוכל לשלוח הודעות לכל תלמידי הכיתה.")
-
-
-def open_private_chat():
-    messagebox.showinfo("צ'אט פרטי", "כאן תוכל לשלוח הודעות אישיות לתלמידים.")
-
-
-def open_video_conference():
-    messagebox.showinfo("שיחת ועידה", "כאן תוכל להצטרף לשיחת ועידה עם המורה והכיתה.")
-
-
-def open_assignments():
-    messagebox.showinfo("משימות", "כאן תוכל להעלות קבצים עבור המשימות שלך.")
-
-
 # יצירת חלון התחברות
 login_window = tk.Tk()
 login_window.title("התחברות למערכת")
@@ -88,8 +88,8 @@ login_window.title("התחברות למערכת")
 label_username = tk.Label(login_window, text="שם משתמש:", font=("Arial", 14))
 label_username.pack(pady=10)
 
-entry_username = tk.Entry(login_window, font=("Arial", 14))
-entry_username.pack(pady=10)
+entry_mail = tk.Entry(login_window, font=("Arial", 14))
+entry_mail.pack(pady=10)
 
 label_password = tk.Label(login_window, text="סיסמה:", font=("Arial", 14))
 label_password.pack(pady=10)
@@ -100,5 +100,8 @@ entry_password.pack(pady=10)
 btn_login = tk.Button(login_window, text="התחבר", font=("Arial", 16), width=20, height=2, command=login)
 btn_login.pack(pady=20)
 
-login_window.mainloop()
+# כפתור להרשמה
+btn_register = tk.Button(login_window, text="הרשמה", font=("Arial", 16), width=20, height=2, command=open_register_window)
+btn_register.pack(pady=10)
 
+login_window.mainloop()
