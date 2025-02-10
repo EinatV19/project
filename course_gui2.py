@@ -43,7 +43,8 @@ class CourseWindow:
         # Add the camera button
         camera_icon = tk.PhotoImage(file="camera.png")  # Load the camera image
         camera_button = tk.Button(self.course_window, image=camera_icon, borderwidth=0)
-        camera_button.place(relx=0.95, rely=0.05, anchor="ne")  # Place it in the top-right corner
+        camera_button.place(relx=0.95, rely=0.15, anchor="ne")  # Move it further downward
+
 
         # Store the reference to the camera icon to prevent it from being garbage collected
         self.camera_icon = camera_icon
