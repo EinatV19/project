@@ -1,53 +1,40 @@
-import tkinter as tk
+from pymongo import MongoClient
+from bson import ObjectId
+
+client = MongoClient("mongodb://localhost:27017/")
+db = client["classroom"]
+collection = db["courses"]
+
+# # Find the document
+# query = {"name": "Mathematics 101", "subject": "Mathematics", "teacher_mail": "q"}
+#
+# # Task to add
+# task1 = {"task_name": "task1", "due_date": "010205", "text": "blabla"}
+# task2 = {"task_name": "task2", "due_date": "012225", "text": "blibli"}
+
+# # Push tasks to the document
+# collection.update_one(query, {"$push": {"tasks": task1}})
+# collection.update_one(query, {"$push": {"tasks": task2}})
 
 
-def open_courses_window(courses_data):
-    # Close the login window
-    login_window.destroy()  # Close the login window (this assumes the login window is named login_window)
 
-    # Create a new window for courses
-    courses_window = tk.Tk()
-    courses_window.title("בחר כיתה")
+# Query to find the correct document
+query = {"name": "Mathematics 101", "subject": "Mathematics", "teacher_mail": "q", "tasks.task_name": "task1"}
 
-    # Set the window size (optional, you can customize as needed)
-    courses_window.geometry("600x400")
-
-    # Add a label for the courses window
-    label_courses = tk.Label(courses_window, text="בחר כיתה", font=("Arial", 20))
-    label_courses.pack(pady=20)
-
-    # Retrieve courses from the dictionary
-    courses = courses_data.get('courses', [])
-
-    # Create a button for each course in the dictionary
-    for course in courses:
-        course_name = course.get('name', 'Unknown Course')  # Use 'Unknown Course' if name is missing
-        btn_course = tk.Button(courses_window, text=course_name, font=("Arial", 16), width=20, height=2,
-                               command=lambda c=course: CourseWindow(None, c))  # Create a new window for the course
-        btn_course.pack(pady=10)
-
-    # Add a "Create New Course" button to open a new course creation window
-    def create_new_course():
-        print("Creating a new course...")  # You can replace this with the actual function to create a new course
-        # You might want to call a separate function here for course creation
-        pass  # Replace with actual logic for creating a new course
-
-    btn_create_new_course = tk.Button(courses_window, text="Create New Course", font=("Arial", 16), width=20, height=2,
-                                      command=create_new_course)
-    btn_create_new_course.pack(pady=10)
-
-    # Run the courses window event loop
-    courses_window.mainloop()
-
-
-# Example usage with a dictionary of courses
-courses_data = {
-    'status': 'success',
-    'courses': [
-        {'name': 'Mathematics 101', 'subject': 'Mathematics', 'teacher_mail': 'q'},
-        {'name': 'Physics 101', 'subject': 'Physics', 'teacher_mail': 'q'}
-    ]
-}
-
-# Open the courses window with the example data
-open_courses_window(courses_data)
+# Student data
+student1 = {"student_mail": "stusss@stu.com", "grade": "100"}
+student2 = {"student_mail": "stuasa@stu.com", "grade": "80"}
+student3 = {"student_mail": "cdsfstu@stu.com", "grade": "100"}
+# Update: Add student to the correct task
+collection.update_one(
+    query,
+    {"$push": {"tasks.$.students": student1}}
+)
+collection.update_one(
+    query,
+    {"$push": {"tasks.$.students": student2}}
+)
+collection.update_one(
+    query,
+    {"$push": {"tasks.$.students": student3}}
+)

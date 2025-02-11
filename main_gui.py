@@ -53,29 +53,33 @@ def open_register_window():
 def login():
     mail = entry_mail.get()
     password = entry_password.get()
-
+    # sending login details to server
     message = f"login:{mail},{password}"
     msg = client.send_message(message)
+
+    # getting response from server. response is json object so we have to deserialize it
     result = json.loads(msg)
 
-    if result['status'] == 'success':  # בדיקת שם משתמש וסיסמה לדוגמה
+    if result['status'] == 'success':
+        # if login success get all courses of current user
         message = f"courses:{mail}"
         msg = client.send_message(message)
+        # getting response from server. response is json object so we have to deserialize it
         result = json.loads(msg)
-        open_courses_window(result)
+        open_courses_window(result , mail)
     else:
         messagebox.showerror("Error", message)
 
 # פתיחת חלון כיתות לאחר התחברות
-def open_courses_window(courses_data):
+def open_courses_window(courses_data, mail):
     # Close the login window
-    login_window.destroy()  # Close the login window (this assumes the login window is named login_window)
+    login_window.destroy()
 
     # Create a new window for courses
     courses_window = tk.Tk()
     courses_window.title("בחר כיתה")
 
-    # Set the window size (optional, you can customize as needed)
+    # Set the window size
     courses_window.geometry("600x400")
 
     # Add a label for the courses window
@@ -128,9 +132,15 @@ def open_courses_window(courses_data):
             new_course = {
                 "name": course_name,
                 "subject": subject,
-                "teacher_mail": "q"
+                "teacher_mail": mail
             }
 
+            dump = json.dumps(new_course)
+            message = f"new_course:{dump}"
+            msg = client.send_message(message)
+            # getting response from server. response is json object so we have to deserialize it
+            result = json.loads(msg)
+            print(result)
 
             # Close the new course window
             new_course_window.destroy()

@@ -7,6 +7,7 @@ class CourseWindow:
         # Initialize the main window and course_id
         self.root = root
         self.course_id = course_id
+        print(course_id)
         self.tasks = ["\u05de\u05d8\u05dc\u05d4 1", "\u05de\u05d8\u05dc\u05d4 2", "\u05de\u05d8\u05dc\u05d4 3"]
 
         # Create and configure the course window
