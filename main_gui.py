@@ -132,7 +132,8 @@ def open_courses_window(courses_data, mail):
             new_course = {
                 "name": course_name,
                 "subject": subject,
-                "teacher_mail": mail
+                "teacher_mail": mail,
+                "tasks":[]
             }
 
             dump = json.dumps(new_course)

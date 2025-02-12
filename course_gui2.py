@@ -3,13 +3,13 @@ from tkinter import messagebox
 
 
 class CourseWindow:
-    def __init__(self, root, course_id):
+    def __init__(self, root, course):
         # Initialize the main window and course_id
         self.root = root
-        self.course_id = course_id
-        print(course_id)
-        self.tasks = ["\u05de\u05d8\u05dc\u05d4 1", "\u05de\u05d8\u05dc\u05d4 2", "\u05de\u05d8\u05dc\u05d4 3"]
-
+        self.course = course
+        print(course)
+        # Extract tasks from the course dictionary
+        self.tasks = course.get("tasks", [])  # Defaults to an empty list if "tasks" is missing
         # Create and configure the course window
         self.create_course_window()
 
@@ -20,16 +20,16 @@ class CourseWindow:
     def create_course_window(self):
         # Create the main window for the course
         self.course_window = tk.Toplevel(self.root)  # Use Toplevel to create a new window
-        self.course_window.title(f"Course {self.course_id}")
+        self.course_window.title(f"Course {self.course['name']}")
 
         # Resize the window with geometry (width x height)
         self.course_window.geometry("800x600")  # Set the window size to 800x600 pixels
 
-        # Add the course label
-        class_label = tk.Label(self.course_window,
-                               text=f"\u05de\u05d3\u05e2\u05d9 \u05d4\u05de\u05d7\u05e9\u05d1 \u05d9\u05d04 - Course ID: {self.course_id}",
-                               font=("Arial", 24))
-        class_label.pack(pady=20)
+        # # Add the course label
+        # class_label = tk.Label(self.course_window,
+        #                        text=f"\u05de\u05d3\u05e2\u05d9 \u05d4\u05de\u05d7\u05e9\u05d1 \u05d9\u05d04 - Course ID: {self.course['id']}",
+        #                        font=("Arial", 24))
+        # class_label.pack(pady=20)
 
         # Frame for task buttons
         tasks_frame = tk.Frame(self.course_window)
@@ -37,7 +37,7 @@ class CourseWindow:
 
         # Create a button for each task
         for task in self.tasks:
-            button = tk.Button(tasks_frame, text=task, command=lambda t=task: self.on_task_button_click(t), width=20,
+            button = tk.Button(tasks_frame, text=task["task_name"], command=lambda t=task: self.on_task_button_click(t), width=20,
                                font=("Arial", 16))
             button.pack(pady=10, fill=tk.X, expand=True)
 

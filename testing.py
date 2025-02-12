@@ -38,3 +38,6 @@ collection.update_one(
     query,
     {"$push": {"tasks.$.students": student3}}
 )
+
+
+
