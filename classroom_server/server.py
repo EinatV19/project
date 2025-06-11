@@ -1,5 +1,6 @@
 import base64
 import json
+import os.path
 import socket
 import threading
 # from pymongo import MongoClient
@@ -106,6 +107,12 @@ def handle_client(client_socket):
                 #
                 # print(f"Received task: {task_name}")
                 # print(f"Saved file: {file_name}")
+            elif command == "download_task":
+                task_details = json.loads(details)
+                task_name = task_details.get("task_name",'')
+                course_id = task_details.get("course_id",'')
+                send_task(client_socket,task_name,course_id)
+                response = "file sent Successfuly"
             else:
                 response = "Invalid command."
 
@@ -117,6 +124,18 @@ def handle_client(client_socket):
     finally:
         print(f"Socket Closing")
         client_socket.close()
+
+def send_task(client,task_name,course_id):
+    task_name = task_name.replace('.','-')
+    task_path = os.path.join("Courses",course_id,task_name,task_name+".docx")
+    file_size = os.path.getsize(task_path)
+    print(f"sending task {task_path} size: {file_size}")
+    client.send(str(file_size).encode())
+    client.recv(1024)
+    with open(task_path,"rb") as file:
+        file_content = file.read()
+        client.send(file_content)
+    print("task sent successfuly")
 
 # Main server function
 def start_server():

@@ -61,7 +61,7 @@ def open_courses_window(root, courses_data, mail, client):
             frame.pack(fill="x", pady=5)
 
             btn_course = tk.Button(frame, text=course['name'], font=("Arial", 16),
-                                   width=20, command=lambda c=course: CourseWindow(None, c, is_teacher=True))
+                                   width=20, command=lambda c=course: CourseWindow(root, c, is_teacher=True))
             btn_course.pack(side="left", padx=5, fill="x", expand=True)
 
             btn_delete = tk.Button(frame, text="❌", font=("Arial", 14), fg="red",
@@ -80,7 +80,7 @@ def open_courses_window(root, courses_data, mail, client):
             frame.pack(fill="x", pady=5)
 
             btn_course = tk.Button(frame, text=course['name'], font=("Arial", 16),
-                                   width=20, command=lambda c=course: CourseWindow(None, c, is_teacher=False))
+                                   width=20, command=lambda c=course: CourseWindow(root, c, is_teacher=False))
             btn_course.pack(side="left", padx=5, fill="x", expand=True)
 
     # ✅ "Create New Course" button
@@ -255,7 +255,7 @@ def open_courses_window(root, courses_data, mail, client):
             frame.pack(fill="x", pady=5)
 
             btn_course = tk.Button(frame, text=course['name'], font=("Arial", 16),
-                                   width=20, command=lambda c=course: CourseWindow(None, c, is_teacher=True))
+                                   width=20, command=lambda c=course: CourseWindow(root, c,True,client))
             btn_course.pack(side="left", padx=5, fill="x", expand=True)
 
             btn_delete = tk.Button(frame, text="❌", font=("Arial", 14), fg="red",
@@ -274,7 +274,7 @@ def open_courses_window(root, courses_data, mail, client):
             frame.pack(fill="x", pady=5)
 
             btn_course = tk.Button(frame, text=course['name'], font=("Arial", 16),
-                                   width=20, command=lambda c=course: CourseWindow(None, c, is_teacher=False))
+                                   width=20, command=lambda c=course: CourseWindow(root, c, is_teacher=False))
             btn_course.pack(side="left", padx=5, fill="x", expand=True)
 
     # ✅ "Create New Course" button

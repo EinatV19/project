@@ -1,19 +1,23 @@
 import tkinter as tk
 from tkinter import messagebox, PhotoImage
+
+from classroom_client.TaskWindow import ViewTaskWindow
 from task_gui import TaskWindow  # Import the task creation window
 from video.teacher_video_server import TeacherServer
 
 
 class CourseWindow:
-    def __init__(self, root, course, is_teacher):
+    def __init__(self, root, course, is_teacher,client):
         self.root = root
         self.course = course
         self.is_teacher = is_teacher  # Store teacher or student mode
-        self.server = None  # Will hold the TeacherServer instance
+        self.client = client  # Will hold the TeacherServer instance
         self.tasks = course.get("tasks", [])  # Load tasks
         self.create_course_window()
     def on_task_button_click(self, task):
         messagebox.showinfo("Task", f"Task: {task['task_name']}")
+        task_window = ViewTaskWindow(self.root,self.course,False,self.client,task["task_name"])
+
 
     def open_task_window(self):
         """Open the task creation window."""
@@ -38,7 +42,7 @@ class CourseWindow:
     def copy_course_id(self):
         """Copy the course ID to the clipboard."""
         self.root.clipboard_clear()
-        self.root.clipboard_append(self.course["id"])
+        self.root.clipboard_append(self.course["_id"])
         self.root.update()  # Required to update the clipboard
         messagebox.showinfo("Copied", "Course ID copied to clipboard!")
 

@@ -20,6 +20,16 @@ class Client:
         except Exception as e:
             print(f"Failed to connect to the server: {e}")
 
+    def receive_file(self,file_size,save_location):
+        self.socket.send(b"R")
+        chunk = b''
+        while file_size>0:
+            chunk += self.socket.recv(1024)
+            file_size -= 1024
+        with open(save_location, "wb") as file:
+            file.write(chunk)
+        return self.socket.recv(1024).decode()
+
     def send_message(self, message):
         """
         Send a message to the server and receive a response.
